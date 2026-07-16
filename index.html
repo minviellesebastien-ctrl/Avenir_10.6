@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ff4b0b">
+  <meta name="description" content="Vue d’ensemble du patrimoine">
+
+  <title>AV€NIR - Patrimoine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+
+  
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icon4-192.png">
+  <link rel="apple-touch-icon" href="./icon4-192.png">
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <div id="appSplash" class="app-splash" aria-hidden="true">
+    <img src="./splash-logo.png" class="app-splash-logo" alt="">
+  </div>
+  <main class="app-shell">
+    <section class="dashboard">
+
+      <article class="total-card">
+        <p class="total-label">TOTAL PATRIMOINE</p>
+        <div id="totalAmount" class="total-amount">0,00 €</div>
+      </article>
+
+      <header class="brand-strip">
+        <img class="brand-logo" src="./logo-avenir.png" alt="Logo AV€NIR">
+
+        <div class="brand-copy">
+          <h1>AV€NIR</h1>
+          <p>Vue d’ensemble du patrimoine</p>
+        </div>
+
+        <div class="brand-actions" aria-label="Actions du bandeau">
+          <button id="openStatsButton" class="header-icon-button" type="button" aria-label="Répartition du patrimoine">
+            <svg class="header-action-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M11 3a8 8 0 1 0 8 8h-8V3Z"></path>
+              <path d="M14 3.5A8 8 0 0 1 20.5 10H14V3.5Z"></path>
+            </svg>
+          </button>
+          <button id="openSettingsButton" class="header-icon-button settings-button" type="button" aria-label="Modifier les comptes">
+            <svg class="header-action-icon settings-svg" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="3.4"></circle>
+              <path d="M19.4 13.3c.06-.42.1-.85.1-1.3s-.04-.88-.1-1.3l2-1.55-1.9-3.3-2.45 1a8.4 8.4 0 0 0-2.25-1.3L14.45 3h-4.9l-.35 2.55a8.4 8.4 0 0 0-2.25 1.3l-2.45-1-1.9 3.3 2 1.55c-.06.42-.1.85-.1 1.3s.04.88.1 1.3l-2 1.55 1.9 3.3 2.45-1a8.4 8.4 0 0 0 2.25 1.3l.35 2.55h4.9l.35-2.55a8.4 8.4 0 0 0 2.25-1.3l2.45 1 1.9-3.3-2-1.55Z"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <section id="accountsList" class="accounts-list" aria-label="Liste des comptes"></section>
+
+      <footer class="footer">
+        <span class="footer-lock" aria-hidden="true">🔒</span>
+        <span>Données sauvegardées automatiquement</span>
+        <span class="footer-separator">•</span>
+        <span id="lastUpdated">—</span>
+      </footer>
+
+    </section>
+  </main>
+
+  <div id="settingsOverlay" class="settings-overlay" hidden>
+    <section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="sheet-handle" aria-hidden="true"></div>
+
+      <header class="settings-header">
+        <div>
+          <p class="settings-eyebrow">AV€NIR</p>
+          <h2 id="settingsTitle">Modifier les comptes</h2>
+        </div>
+
+        <button
+          id="closeSettingsButton"
+          class="close-settings-button"
+          type="button"
+          aria-label="Fermer les paramètres"
+        >
+          ×
+        </button>
+      </header>
+
+      <div id="settingsAccounts" class="settings-accounts"></div>
+
+      <div class="settings-actions">
+        <button id="addAccountButton" class="add-account-button" type="button">
+          + Ajouter un compte
+        </button>
+
+        <button id="saveSettingsButton" class="save-settings-button" type="button">
+          Enregistrer
+        </button>
+      </div>
+    </section>
+  </div>
+
+
+  <div id="statsOverlay" class="stats-overlay" hidden>
+    <section class="stats-panel" role="dialog" aria-modal="true" aria-labelledby="statsTitle">
+      <header class="stats-header">
+        <div class="stats-title-wrap">
+          <svg class="stats-title-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M11 3a8 8 0 1 0 8 8h-8V3Z"></path>
+            <path d="M14 3.5A8 8 0 0 1 20.5 10H14V3.5Z"></path>
+          </svg>
+          <div><p class="stats-eyebrow">AV€NIR</p><h2 id="statsTitle">Répartition du patrimoine</h2></div>
+        </div>
+        <button id="closeStatsButton" class="close-stats-button" type="button" aria-label="Fermer">×</button>
+      </header>
+      <div class="stats-content">
+        <div class="donut-stage">
+          <canvas id="assetDonutCanvas" width="620" height="620"></canvas>
+          <div class="donut-center-copy"><span>TOTAL</span><strong id="donutTotal">0,00 €</strong><small>100 %</small></div>
+        </div>
+        <div id="donutLegend" class="donut-legend"></div>
+      </div>
+    </section>
+  </div>
+
+  <template id="accountCardTemplate">
+    <article class="account-card">
+      <div class="account-icon-wrap">
+        <img class="account-icon" src="" alt="">
+      </div>
+
+      <div class="account-main">
+        <div class="account-name"></div>
+      </div>
+
+      <div class="account-value">
+        <span class="account-amount"></span>
+        <span class="currency">€</span>
+      </div>
+</article>
+  </template>
+
+  <template id="settingsAccountTemplate">
+    <article class="settings-account-row">
+      <button
+  class="drag-handle"
+  type="button"
+  aria-label="Maintenir pour déplacer ce compte"
+>
+  ☰
+</button>
+      <div class="settings-field icon-field">
+        <label>Image</label>
+        <select class="icon-select">
+          <option value="revolut">Revolut</option>
+          <option value="livret-a">Livret A</option>
+          <option value="ldd">LDD</option>
+          <option value="lep">LEP</option>
+          <option value="assurance-vie">Assurance Vie</option>
+          <option value="msci">MSCI World</option>
+          <option value="per">PER</option>
+        </select>
+      </div>
+
+      <div class="settings-field name-field">
+        <label>Nom du compte</label>
+        <input class="name-input" type="text" autocomplete="off">
+      </div>
+
+      <div class="settings-field amount-field">
+        <label>Montant</label>
+        <div class="amount-input-wrapper">
+          <input class="amount-input" type="text" inputmode="decimal" autocomplete="off">
+          <span>€</span>
+        </div>
+      </div>
+
+      <button class="delete-account-button" type="button">Supprimer</button>
+    </article>
+  </template>
+
+  <div id="msciNoteOverlay" class="msci-note-overlay" hidden>
+  <section class="msci-note-panel">
+    <h2>MSCI World</h2>
+
+    <textarea
+      id="msciNoteText"
+      placeholder="Versements, arbitrages, seuil de plus-value..."
+    ></textarea>
+
+    <button id="closeMsciNoteButton" type="button">
+      Fermer
+    </button>
+  </section>
+</div>
+  
+  <script src="./script.js"></script>
+</body>
+</html>
